@@ -1,4 +1,4 @@
-import { ADD_POST, GET_POST, GET_POSTS, LIKE_POST, UNLIKE_POST, EDIT_POST, DELETE_POST, ADD_COMMENT_ERROR, ADD_COMMENT } from "../constants/postConstants"
+import { ADD_POST, GET_POST, GET_POSTS, LIKE_POST, UNLIKE_POST, EDIT_POST, DELETE_POST } from "../constants/postConstants"
 import { LOADING, ERROR } from "../constants/globalConstants"
 import api from '../utils/api'
 import getToken from '../utils/getToken'
@@ -170,31 +170,5 @@ export const deletePost = (history, id) => async (dispatch, getState) => {
         : error.message
     })
     alert('Something went wrong')
-  }
-}
-
-export const addComment = (id, formData) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: LOADING
-    })
-
-    const { data } = await api.post(`/posts/comment/${id}`, formData, {
-      headers: {
-        'Authorization': `Bearer ${getToken(getState)}`
-      }
-    })
-
-    dispatch({
-      type: ADD_COMMENT,
-      payload: data
-    })
-  } catch (error) {
-    dispatch({
-      type: ADD_COMMENT_ERROR,
-      payload: error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message
-    })
   }
 }

@@ -172,83 +172,6 @@ const unlikePost = asyncHandler(async (req, res) => {
   })
 })
 
-const addComment = asyncHandler(async (req, res) => {
-  const { body } = req.body
-  const post = await Post.findById(req.params.id)
-
-  if (!post) {
-    throwError(res, 'Post not found', 404)
-  }
-
-  if (!body) {
-    throwError(res, 'Please type in some text', 400)
-  }
-
-  const comment = {
-    user: req.userId,
-    body
-  }
-  post.comments.unshift(comment)
-
-  let commentedPost = await post.save()
-  commentedPost = await commentedPost.populate('comments.user', ['name', 'avatar']).populate('user', ['name', 'avatar']).execPopulate()
-
-  res.json({
-    id: commentedPost._id,
-    user: commentedPost.user,
-    title: commentedPost.title,
-    image: commentedPost.image,
-    body: commentedPost.body,
-    comments: commentedPost.comments,
-    createdAt: commentedPost.createdAt,
-    likes: commentedPost.likes
-  })
-})
-
-const editComment = asyncHandler(async (req, res) => {
-  const { body } = req.body
-  const post = await Post.findById(req.params.postId)
-  const comment = post.comments.find(comment => comment._id.toString() === req.params.commentId.toString())
-
-  if (!body) {
-    throwError(res, 'Please type in some text', 404)
-  }
-
-  comment.body = body
-
-  const updatedPost = await post.save()
-  updatedPost = await updatedPost.populate('comments.user', ['name', 'avatar']).populate('user', ['name', 'avatar']).execPopulate()
-  res.json({
-    id: updatedPost._id,
-    user: updatedPost.user,
-    title: updatedPost.title,
-    image: updatedPost.image,
-    body: updatedPost.body,
-    comments: updatedPost.comments,
-    createdAt: updatedPost.createdAt,
-    likes: updatedPost.likes
-  })
-})
-
-const deleteComment = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.postId)
-
-  post.comments = post.comments.filter(comment => comment._id.toString() !== req.params.commentId.toString())
-
-  const updatedPost = await post.save()
-  updatedPost = await updatedPost.populate('comments.user', ['name', 'avatar']).populate('user', ['name', 'avatar']).execPopulate()
-  res.json({
-    id: updatedPost._id,
-    user: updatedPost.user,
-    title: updatedPost.title,
-    image: updatedPost.image,
-    body: updatedPost.body,
-    comments: updatedPost.comments,
-    createdAt: updatedPost.createdAt,
-    likes: updatedPost.likes
-  })
-})
-
 module.exports = {
   addPost,
   getPost,
@@ -257,7 +180,4 @@ module.exports = {
   deletePost,
   likePost,
   unlikePost,
-  addComment,
-  editComment,
-  deleteComment
 }

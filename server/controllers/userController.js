@@ -155,7 +155,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 
   const transporter = nodemailer.createTransport({
-    service: 'yahoo',
+    service: process.env.EMAIL_SERVICE,
     auth: {
       user: 'deni_onu@yahoo.com',
       pass: process.env.EMAIL_PASSWORD

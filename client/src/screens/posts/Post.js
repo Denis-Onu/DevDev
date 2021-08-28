@@ -31,28 +31,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getPost, likePost, unlikePost, deletePost, addComment } from '../../actions/postActions'
 
 const Post = ({ match }) => {
-  const [commentBody, setCommentBody] = useState('')
-
   const classes = useStyles()
-  const formClasses = formStyles()
   const dispatch = useDispatch()
   const history = useHistory()
 
   const loading = useSelector(state => state.postReducer.loading)
   const post = useSelector(state => state.postReducer.post)
   const user = useSelector(state => state.profileReducer.profile)
-  const commentError = useSelector(state => state.postReducer.commentError)
 
   useEffect(() => {
     dispatch(getPost(match.params.id))
   }, [])
-
-
-  const addCommentHandler = e => {
-    e.preventDefault()
-    dispatch(addComment(post.id, { body: commentBody }))
-  }
-
   return (
     <Container maxWidth='md' className={classes.container}>
       <div className={classes.toolbar}></div>
@@ -80,9 +69,9 @@ const Post = ({ match }) => {
             <Box my={1}>
               <ListItem className={classes.profile}>
                 <ListItemIcon>
-                  <Avatar src={process.env.REACT_APP_SERVER_URL + post.user.avatar} alt={post.user.name} />
+                  <Avatar src={post.user && process.env.REACT_APP_SERVER_URL + post.user.avatar} alt={post.user && post.user.name} />
                 </ListItemIcon>
-                <ListItemText primary={post.user.name} secondary={new Intl.DateTimeFormat().format(new Date(post.createdAt))} />
+                <ListItemText primary={post.user ? post.user.name : "This account was deleted"} secondary={new Intl.DateTimeFormat().format(new Date(post.createdAt))} />
               </ListItem>
             </Box>
             <Typography gutterBottom>
@@ -90,11 +79,11 @@ const Post = ({ match }) => {
             </Typography>
           </CardContent>
           <CardActions>
-            <IconButton disabled={user && post.likes.find(like => like === user.id)} onClick={() => dispatch(likePost(post.id))}>
+            <IconButton disabled={!user || post.likes.find(like => like === user.id)} onClick={() => dispatch(likePost(post.id))}>
               <ThumbUpAltIcon />
             </IconButton>
             <Typography variant='button'>{post.likes.length}</Typography>
-            <IconButton disabled={user && !post.likes.find(like => like === user.id)} onClick={() => dispatch(unlikePost(post.id))}>
+            <IconButton disabled={!user || !post.likes.find(like => like === user.id)} onClick={() => dispatch(unlikePost(post.id))}>
               <ThumbDownIcon />
             </IconButton>
           </CardActions>

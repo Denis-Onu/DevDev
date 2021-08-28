@@ -106,8 +106,8 @@ const Posts = () => {
               <Grid item xl={3} lg={4} md={6} sm={6} xs={12} key={post._id}>
                 <PostItem
                   id={post._id}
-                  username={post.user.name}
-                  useravatar={process.env.REACT_APP_SERVER_URL + post.user.avatar}
+                  username={post.user ? post.user.name : "This account was deleted"}
+                  useravatar={post.user && process.env.REACT_APP_SERVER_URL + post.user.avatar}
                   date={new Intl.DateTimeFormat().format(new Date(post.createdAt))}
                   image={process.env.REACT_APP_SERVER_URL + post.image}
                   title={post.title}

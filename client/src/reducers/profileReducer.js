@@ -4,6 +4,7 @@ import {
   DELETE_PROFILE
 } from '../constants/profileConstants'
 import { ERROR, LOADING, CLEAR_ERRORS } from '../constants/globalConstants'
+import { LOGOUT } from '../constants/authConstants'
 
 const profileReducer = (state = {}, action) => {
   switch (action.type) {
@@ -24,6 +25,9 @@ const profileReducer = (state = {}, action) => {
 
     case CLEAR_ERRORS:
       return { ...state, loading: false, error: null }
+
+    case LOGOUT:
+      return { ...state, profile: null, loading: false, error: null }
 
 
     default:
